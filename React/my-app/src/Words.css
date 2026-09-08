@@ -1,0 +1,195 @@
+
+.words.area {
+    background-color: hwb(0 95% 10%);
+    padding: 1.5rem;
+    min-width: 0;
+    border-radius: 16px;
+    height: 80vh;
+    overflow: auto;
+
+    box-sizing: border-box;
+}
+
+hr{
+    margin: 5px auto;
+}
+
+h2 + button{
+    flex: 1;
+    margin: 1rem auto;
+    transition:
+        background-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+h2 + button:hover{
+    transform: translateY(-2px);
+}
+
+h2 + button:disabled{
+    background-color:   rgb(166, 166, 166);
+    cursor: not-allowed;
+}
+
+/* =========================
+   Top controls
+   ========================= */
+
+.words.area > button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.words.area > input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    border: 2px solid lightblue;
+}
+
+
+
+/* =========================
+   Word list
+   ========================= */
+
+.words.area ul {
+    display: grid;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    row-gap: 10px;
+    list-style: none;
+}
+
+
+/* =========================
+   Word card
+   ========================= */
+
+.wordcard {
+    text-align: center;
+    padding: 1rem;
+
+    box-sizing: border-box;
+
+    background-color: white;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+}
+
+.wordcard.selected {
+    border: 3px solid rgb(255, 200, 0);
+    
+}
+
+
+/* Word information */
+
+.wordcard span {
+    display: block;
+    margin: 5px 0;
+
+    text-align: center;
+}
+
+
+.wordcard button {
+    border: none;
+    border-radius: 10px;
+
+    padding: 12px 24px;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.wordcard button:hover {
+    transform: translateY(-2px);
+}
+
+.wordcard button:active {
+    transform: translateY(0);
+}
+
+.wordcard button:focus-visible {
+    outline: 3px solid rgb(0 100 255 / 0.35);
+    outline-offset: 3px;
+}
+
+.wordcard button:last-child{
+    background: #f1f1f1;
+    color: #666;
+}
+
+.wordcard button:last-child:hover{
+    background: #e5e5e5;
+    color: #333;
+}
+
+
+
+.wordcard input,
+.words.area li > input {
+    display: block;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 8px 0;
+    padding: 8px;
+}
+
+
+/* Edit form buttons */
+
+.words.area li > button {
+    width: calc(50% - 5px);
+    margin: 10px 2.5px 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   Add form
+   ========================= */
+
+.words.area form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.words.area form label {
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.words.area form input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 8px;
+}
+
+.words.area form button {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.words.area form button + button {
+    margin-top: 0;
+}
+
