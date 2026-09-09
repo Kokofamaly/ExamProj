@@ -180,7 +180,7 @@ When using Docker Compose, these variables are configured in `compose.yaml`.
 
 ## 👤 Test User
 
-If user registration is not implemented, use the following test account:
+You can use the following test account:
 
 ```text
 Email: test@gmail.com
