@@ -59,8 +59,8 @@ public class MongoDbContext
             userWords.Add(new UserWord()
             {
                 UserId = user.Id!,
-                Word = words[i],
-                Translation = translations[i],
+                Word = words[i]?.ToLowerInvariant()!,
+                Translation = translations[i]?.ToLowerInvariant()!,
                 Language = "english",
             });
         }
@@ -74,8 +74,8 @@ public class MongoDbContext
             userWords.Add(new UserWord()
             {
                 UserId = user.Id!,
-                Word = foodWords[i],
-                Translation = foodTranslations[i],
+                Word = foodWords[i]?.ToLowerInvariant()!,
+                Translation = foodTranslations[i]?.ToLowerInvariant()!,
                 Language = "english",
                 Category = "food",
                 UsageExample = $"I forgot to buy {foodWords[i]}"
@@ -113,9 +113,9 @@ public class MongoDbContext
             {
                 UserWordId = word.Id!,
                 SessionId = word.Category == categorizedSession.Category ? categorizedSession.Id! : defaultSession.Id!,
-                Word = word.Word,
-                Translation = word.Translation,
-                UsageExample = word.UsageExample
+                Word = word.Word?.ToLowerInvariant()!,
+                Translation = word.Translation?.ToLowerInvariant()!,
+                UsageExample = word.UsageExample?.ToLowerInvariant()!
             });
         }
 

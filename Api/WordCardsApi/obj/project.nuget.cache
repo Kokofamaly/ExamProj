@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D8XULLRf4dM=",
+  "dgSpecHash": "iQ7FFbZKf2M=",
   "success": true,
-  "projectFilePath": "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
+  "projectFilePath": "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
   "expectedPackageFiles": [
     "/Users/kokofamaly/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
     "/Users/kokofamaly/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.11/microsoft.aspnetcore.authentication.jwtbearer.10.0.11.nupkg.sha512",

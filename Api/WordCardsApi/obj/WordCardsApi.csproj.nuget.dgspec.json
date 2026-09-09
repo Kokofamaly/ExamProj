@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/WordCardsApi.csproj": {}
+    "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/WordCardsApi.csproj": {}
   },
   "projects": {
-    "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/WordCardsApi.csproj": {
+    "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/WordCardsApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
+        "projectUniqueName": "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
         "projectName": "WordCardsApi",
-        "projectPath": "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
+        "projectPath": "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/WordCardsApi.csproj",
         "packagesPath": "/Users/kokofamaly/.nuget/packages/",
-        "outputPath": "/Users/kokofamaly/Desktop/Mentoring/ExamProject/Api/WordCardsApi/obj/",
+        "outputPath": "/Users/kokofamaly/Documents/ExamProject/Api/WordCardsApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/kokofamaly/.nuget/NuGet/NuGet.Config"
