@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WordCardsApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3cc97991f10a91d02c5c0ba88f81491aed994947")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+045ef3badb6a7072ead22995700e468f249cf6e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("WordCardsApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WordCardsApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
