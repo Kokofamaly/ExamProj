@@ -29,7 +29,7 @@ public class UserWordController : ControllerBase
 
         if(words == null) return BadRequest();
 
-        var result = words.Select(w => MapResponseDto(w));
+        var result = words.Select(w => w.MapResponseDto());
 
         _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(wordlist items:{result.Count()}) from get word method");
 
@@ -46,7 +46,7 @@ public class UserWordController : ControllerBase
         if(word == null) return NotFound();
         if(word.UserId != userId) return Forbid();
 
-        var wordResponseDto = MapResponseDto(word);
+        var wordResponseDto = word.MapResponseDto();
 
         _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from get word method");
 
@@ -61,7 +61,7 @@ public class UserWordController : ControllerBase
         if(userId == null) return Unauthorized();
 
         var word = await _userWordService.CreateUserWordAsync(wordCreateDto, userId);
-        var wordResponseDto = MapResponseDto(word);
+        var wordResponseDto = word.MapResponseDto();
 
         _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from create word method");
 
@@ -102,21 +102,5 @@ public class UserWordController : ControllerBase
     {
         return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
-
-    private UserWordResponseDto MapResponseDto(UserWord word)
-    {
-        var wordDto = new UserWordResponseDto
-        {
-            Id = word.Id!,
-            Word = word.Word.StartStringWithCapitalNormalize(),
-            Translation = word.Translation.StartStringWithCapitalNormalize(),
-            Language = word.Language.StartStringWithCapitalNormalize(),
-            Category = word.Category?.StartStringWithCapitalNormalize(),
-            UsageExample = word.UsageExample?.StartStringWithCapitalNormalize()
-        };
-
-        return wordDto;
-    }
-
 
 }

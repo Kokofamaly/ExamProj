@@ -37,7 +37,7 @@ public class LearningSessionController : ControllerBase
 
         var sessions = await _learningSessionService.GetLearningSessionsByUserIdAsync(userId);
 ;
-        var sessionsDto = sessions.Select(s => MapResponseDto(s));
+        var sessionsDto = sessions.Select(s => s.MapResponseDto());
 
         _logger.LogInformation($"{DateTimeOffset.UtcNow}: user:{userId} gets {sessionsDto.Count()} sessions");
 
@@ -53,7 +53,7 @@ public class LearningSessionController : ControllerBase
         if(session == null) return NotFound();
         if(session.UserId != userId) return Forbid();
 
-        var sessionDto = MapResponseDto(session);
+        var sessionDto = session.MapResponseDto();
 
         var sessionWords = await _sessionWordProvider.GetSessionWordsAsync(session.Id!);
         var sessionWordsDto = sessionWords.OrderByDescending(w => w.Order).Select(w => new SessionWordResponseDto
@@ -84,7 +84,7 @@ public class LearningSessionController : ControllerBase
 
         if(session == null) return BadRequest();
 
-        var sessionDto = MapResponseDto(session);
+        var sessionDto = session.MapResponseDto();
 
         _logger.LogInformation($"${DateTimeOffset.UtcNow}: user:{userId} creates session{sessionDto.Id}");
 
@@ -126,18 +126,6 @@ public class LearningSessionController : ControllerBase
     private string? GetUserId()
     {
         return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    }
-
-    private LearningSessionResponseDto MapResponseDto(LearningSession session)
-    {
-        var sessionDto = new LearningSessionResponseDto
-        {
-            Id = session.Id!,
-            CreatedAt = session.CreatedAt,
-            Category = session.Category?.StartStringWithCapitalNormalize(),
-            Language = session.Language?.StartStringWithCapitalNormalize()
-        };
-        return sessionDto;
     }
 
 }
