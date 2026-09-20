@@ -56,9 +56,10 @@ public class AuthController : ControllerBase
 
         if(!registerResult.Succeeded) return BadRequest($"Failed to register user: {registerResult.RegisterErrorEnum}");
 
+        var createdUser = registerResult.User!;
         var userResponse = new UserResponseDto{ Email = createdUser.Email, Name = createdUser.Name };
 
-        var refreshToken = await _refreshTokenService.GenerateTokenAsync(createdUser.Id);
+        var refreshToken = await _refreshTokenService.GenerateTokenAsync(createdUser.Id!);
         SetRefreshTokenCookies(refreshToken);
         
         var accessToken = _jwt.GenerateToken(createdUser);
