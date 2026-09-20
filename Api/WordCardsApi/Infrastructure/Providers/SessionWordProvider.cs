@@ -22,7 +22,7 @@ public class SessionWordProvider
     public async Task<SessionWord?> SetCorrectAsync(string id, bool isCorrect)
     => await _sessionWords.FindOneAndUpdateAsync(
         w => w.Id == id, 
-        Builders<SessionWord>.Update.Set(w => w.isCorrect, isCorrect), 
+        Builders<SessionWord>.Update.Set(w => w.IsCorrect, isCorrect), 
         new FindOneAndUpdateOptions<SessionWord>
         {
             ReturnDocument = ReturnDocument.After

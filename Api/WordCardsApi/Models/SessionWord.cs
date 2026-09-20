@@ -13,7 +13,7 @@ public class SessionWord
     public string SessionId { get; set; } = string.Empty;
     [Required]
     public string UserWordId { get; set; } = string.Empty;
-    public bool? isCorrect { get; set; }
+    public bool? IsCorrect { get; set; }
     [Required]
     public string Word { get; set; } = string.Empty;
     [Required]

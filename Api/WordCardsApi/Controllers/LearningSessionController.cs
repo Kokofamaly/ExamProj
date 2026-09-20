@@ -61,7 +61,7 @@ public class LearningSessionController : ControllerBase
             Id = w.Id!,
             SessionId = w.SessionId,
             UserWordId = w.UserWordId,
-            isCorrect = w.isCorrect,
+            IsCorrect = w.IsCorrect,
             Word = w.Word.StartStringWithCapitalNormalize(),
             Translation = w.Translation.StartStringWithCapitalNormalize(),
             UsageExample = w.UsageExample?.StartStringWithCapitalNormalize(),
@@ -96,9 +96,9 @@ public class LearningSessionController : ControllerBase
     {
         if(id != answerDto.SessionId) return BadRequest();
 
-        await _sessionWordProvider.SetCorrectAsync(answerDto.Id, answerDto.isCorrect);
+        await _sessionWordProvider.SetCorrectAsync(answerDto.Id, answerDto.IsCorrect);
 
-        if(answerDto.isCorrect)
+        if(answerDto.IsCorrect)
             await _userWordService.ResetUserWordDifficultyLevelAsync(answerDto.UserWordId);
         else
             await _userWordService.UpUserWordDifficultyLevelAsync(answerDto.UserWordId);
