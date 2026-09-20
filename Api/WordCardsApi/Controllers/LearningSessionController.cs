@@ -39,7 +39,7 @@ public class LearningSessionController : ControllerBase
 ;
         var sessionsDto = sessions.Select(s => s.MapResponseDto());
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: user:{userId} gets {sessionsDto.Count()} sessions");
+        _logger.LogInformation("User {UserId} gets {NumberOfSessions} sessions", userId, sessionsDto.Count());
 
         return Ok(sessionsDto);
     }
@@ -68,7 +68,7 @@ public class LearningSessionController : ControllerBase
             Order = w.Order
         });
         
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: user:{userId} gets session {sessionDto.Id}");
+        _logger.LogInformation("User {UserId} gets session {SessionId}", userId, sessionDto.Id);
 
         return Ok(new {session = sessionDto, sessionWords = sessionWordsDto});
 
@@ -86,7 +86,7 @@ public class LearningSessionController : ControllerBase
 
         var sessionDto = session.MapResponseDto();
 
-        _logger.LogInformation($"${DateTimeOffset.UtcNow}: user:{userId} creates session{sessionDto.Id}");
+        _logger.LogInformation("User {UserId} creates session {SessionId}", userId, sessionDto.Id);
 
         return Ok(sessionDto);
     }
@@ -103,7 +103,7 @@ public class LearningSessionController : ControllerBase
         else
             await _userWordService.UpUserWordDifficultyLevelAsync(answerDto.UserWordId);
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: session answer");
+        _logger.LogInformation("Session {SessionId} got answer", id);
 
         return NoContent();
     }
@@ -119,7 +119,7 @@ public class LearningSessionController : ControllerBase
 
         await _learningSessionService.DeleteSessionAsync(session);
         
-        _logger.LogInformation($"${DateTimeOffset.UtcNow}: user:{userId} deletes session{session.Id}");
+        _logger.LogInformation("User {UserId} deletes session {SessionId}", userId, session.Id);
 
         return NoContent();
     }
