@@ -43,6 +43,11 @@ public class UserWordService
         wordUpdateDto.Category = wordUpdateDto.Category?.Trim().ToLowerInvariant();
         wordUpdateDto.UsageExample = wordUpdateDto.UsageExample?.Trim().ToLowerInvariant();
 
+        if(String.IsNullOrEmpty(wordUpdateDto.Word) 
+        || String.IsNullOrEmpty(wordUpdateDto.Translation) 
+        || String.IsNullOrEmpty(wordUpdateDto.Language))
+            return null;
+
         var oldWord = await _userWordProvider.GetUserWordAsync(wordId);
         
         if(oldWord == null) return null;

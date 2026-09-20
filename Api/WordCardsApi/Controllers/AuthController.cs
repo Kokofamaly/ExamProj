@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WordCardsApi.DTOs;
+using WordCardsApi.Enum;
 using WordCardsApi.Extensions;
 using WordCardsApi.Services;
 
@@ -33,7 +34,14 @@ public class AuthController : ControllerBase
     {
         var loginResult = await _authService.LoginUserAsync(userLoginDto);
         
-        if(!loginResult.Succeeded) return BadRequest($"Failed to login: {loginResult.LoginErrorEnum}");
+        if(!loginResult.Succeeded) {  
+            return loginResult.LoginErrorEnum switch
+            {
+                LoginErrorEnum.InvalidCredentials => BadRequest(new { message = "Invalid Credentials"}),
+                LoginErrorEnum.UserNotFound => NotFound(new { message = "User Not Found" }),
+                _ => BadRequest()
+            };
+            }
 
         var userToLogin = loginResult.User!;
         var userResponse = new UserResponseDto{ Email = userToLogin.Email, Name = userToLogin.Name };
@@ -54,7 +62,14 @@ public class AuthController : ControllerBase
     {
         var registerResult = await _authService.RegisterUserAsync(userRegisterDto);
 
-        if(!registerResult.Succeeded) return BadRequest($"Failed to register user: {registerResult.RegisterErrorEnum}");
+        if(!registerResult.Succeeded){
+            return registerResult.RegisterErrorEnum switch
+            {
+                RegisterErrorEnum.EmailAlreadyExists => Conflict(new { message = $"User with {userRegisterDto.Email} email already exists."}),
+                RegisterErrorEnum.EmptyCredentials => BadRequest(new { message = "You did not fill all the fields."}),
+                _ => BadRequest()
+            };
+        }
 
         var createdUser = registerResult.User!;
         var userResponse = new UserResponseDto{ Email = createdUser.Email, Name = createdUser.Name };
