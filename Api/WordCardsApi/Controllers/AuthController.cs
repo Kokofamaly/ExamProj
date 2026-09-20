@@ -52,9 +52,9 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
     {
-        var createdUser = await _authService.RegisterUserAsync(userRegisterDto);
+        var registerResult = await _authService.RegisterUserAsync(userRegisterDto);
 
-        if(createdUser == null || createdUser.Id == null) return BadRequest("Failed to register user.");
+        if(!registerResult.Succeeded) return BadRequest($"Failed to register user: {registerResult.RegisterErrorEnum}");
 
         var userResponse = new UserResponseDto{ Email = createdUser.Email, Name = createdUser.Name };
 

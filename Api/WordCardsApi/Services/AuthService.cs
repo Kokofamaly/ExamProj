@@ -33,11 +33,11 @@ public class AuthService
         
     }
 
-    public async Task<User?> RegisterUserAsync(UserRegisterDto userDto)
+    public async Task<RegisterResult> RegisterUserAsync(UserRegisterDto userDto)
     {
         try{
             if(userDto == null || String.IsNullOrEmpty(userDto.Name) || String.IsNullOrEmpty(userDto.Email) || String.IsNullOrEmpty(userDto.Password))
-                return null;
+                return RegisterResult.Fail(RegisterErrorEnum.EmptyCredentials);
             
             var userToRegister = new User
             {
@@ -49,11 +49,11 @@ public class AuthService
             
                 var user = await _userProvider.CreateUserAsync(userToRegister);
             
-            return user;
+            return RegisterResult.Success(user);
         }
         catch(MongoWriteException ex) when (ex.WriteError?.Category == ServerErrorCategory.DuplicateKey)
         {
-            throw new EmailAlreadyExistsException(userDto.Email.Trim().ToLowerInvariant());
+            return RegisterResult.Fail(RegisterErrorEnum.EmailAlreadyExists);
         }
 
     }
