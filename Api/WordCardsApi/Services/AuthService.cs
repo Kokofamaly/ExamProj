@@ -4,6 +4,7 @@ using WordCardsApi.CustomExceptions;
 using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Providers;
 using WordCardsApi.Models;
+using WordCardsApi.Enum;
 
 namespace WordCardsApi.Services;
 
@@ -18,17 +19,17 @@ public class AuthService
         _userProvider = userProvider;
     }
 
-    public async Task<User?> LoginUserAsync(UserLoginDto userDto)
+    public async Task<LoginResult> LoginUserAsync(UserLoginDto userDto)
     {
         var user = await _userProvider.GetUserAsync(userDto.Email.ToLowerInvariant());
 
-        if(user == null) return null;
+        if(user == null) return LoginResult.Fail(LoginErrorEnum.UserNotFound);
 
         var passwordVerification = _hasher.VerifyHashedPassword(user, user.HashedPassword, userDto.Password);
 
-        if(passwordVerification == PasswordVerificationResult.Failed) return null;
+        if(passwordVerification == PasswordVerificationResult.Failed) return LoginResult.Fail(LoginErrorEnum.InvalidCredentials);
         
-        return user;
+        return LoginResult.Success(user);
         
     }
 

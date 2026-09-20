@@ -31,13 +31,14 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginDto userLoginDto)
     {
-        var userToLogin = await _authService.LoginUserAsync(userLoginDto);
+        var loginResult = await _authService.LoginUserAsync(userLoginDto);
         
-        if(userToLogin == null || userToLogin.Id == null) return BadRequest("Failed to login");
+        if(!loginResult.Succeeded) return BadRequest($"Failed to login: {loginResult.LoginErrorEnum}");
 
+        var userToLogin = loginResult.User!;
         var userResponse = new UserResponseDto{ Email = userToLogin.Email, Name = userToLogin.Name };
 
-        var refreshToken = await _refreshTokenService.GenerateTokenAsync(userToLogin.Id);
+        var refreshToken = await _refreshTokenService.GenerateTokenAsync(userToLogin.Id!);
         SetRefreshTokenCookies(refreshToken);
 
         var accessToken = _jwt.GenerateToken(userToLogin);
