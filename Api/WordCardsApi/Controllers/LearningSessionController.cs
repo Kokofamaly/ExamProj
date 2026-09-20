@@ -31,7 +31,7 @@ public class LearningSessionController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetSessions()
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
 
         if(userId == null) return Unauthorized();
 
@@ -47,7 +47,7 @@ public class LearningSessionController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetSession(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var session = await _learningSessionService.GetLearningSessionAsync(id);
 
         if(session == null) return NotFound();
@@ -77,7 +77,7 @@ public class LearningSessionController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateSession(LearningSessionCreateDto dto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if(userId == null) return Unauthorized();
 
         var session = await _learningSessionService.CreateSessionAsync(dto, userId);
@@ -111,7 +111,7 @@ public class LearningSessionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSession(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var session = await _learningSessionService.GetLearningSessionAsync(id);
 
         if(session == null) return NotFound();
@@ -122,10 +122,6 @@ public class LearningSessionController : ControllerBase
         _logger.LogInformation($"${DateTimeOffset.UtcNow}: user:{userId} deletes session{session.Id}");
 
         return NoContent();
-    }
-    private string? GetUserId()
-    {
-        return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 
 }

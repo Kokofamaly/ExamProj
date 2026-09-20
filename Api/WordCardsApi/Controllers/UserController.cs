@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using WordCardsApi.DTOs;
+using WordCardsApi.Extensions;
 using WordCardsApi.Models;
 using WordCardsApi.Services;
 
@@ -22,13 +23,13 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetMe()
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if(userId == null) return Unauthorized();
 
         var user = await _userService.GetUserAsync(userId);
         if(user == null) return NotFound();
         
-        var userResponseDto = MapResponseDto(user);
+        var userResponseDto = user.MapResponseDto();
 
         _logger.LogInformation($"{DateTimeOffset.UtcNow}: User:{user.Id} gets profile data");
         return Ok(userResponseDto);
@@ -38,7 +39,7 @@ public class UserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateMe(UserUpdateDto userUpdateDto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if(userId == null) return Unauthorized();
 
         var user = await _userService.UpdateUserAsync(userId, userUpdateDto);
@@ -52,7 +53,7 @@ public class UserController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeleteMe()
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if(userId == null) return Unauthorized();
         
         if(!Request.Cookies.TryGetValue("refreshToken", out var token)) return BadRequest();
@@ -64,6 +65,4 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    private string? GetUserId() => HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    private UserResponseDto MapResponseDto(User user) => new UserResponseDto { Name = user.Name , Email = user.Email };
 }

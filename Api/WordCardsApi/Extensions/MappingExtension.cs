@@ -14,6 +14,7 @@ public static class MappingExtension
             Category = session.Category?.StartStringWithCapitalNormalize(),
             Language = session.Language?.StartStringWithCapitalNormalize()
         };
+        
         return sessionDto;
     }
     public static UserWordResponseDto MapResponseDto(this UserWord word)
@@ -29,5 +30,10 @@ public static class MappingExtension
         };
 
         return wordDto;
+    }
+
+    public static UserResponseDto MapResponseDto(this User user)
+    {
+        return new UserResponseDto { Name = user.Name , Email = user.Email };
     }
 }

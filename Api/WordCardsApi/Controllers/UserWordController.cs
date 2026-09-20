@@ -40,7 +40,7 @@ public class UserWordController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetWord(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var word = await _userWordService.GetUserWordAsync(id);
 
         if(word == null) return NotFound();
@@ -56,7 +56,7 @@ public class UserWordController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateWord(UserWordCreateDto wordCreateDto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         
         if(userId == null) return Unauthorized();
 
@@ -71,7 +71,7 @@ public class UserWordController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateWord(string id, UserWordUpdateDto wordUpdateDto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var updatedWord = await _userWordService.UpdateUserWordAsync(id, wordUpdateDto);
 
         if(updatedWord == null) return BadRequest();
@@ -85,7 +85,7 @@ public class UserWordController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWord(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var word = await _userWordService.GetUserWordAsync(id);
 
         if(word == null) return NotFound();
@@ -96,11 +96,6 @@ public class UserWordController : ControllerBase
         _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning no content from delete word method");
 
         return NoContent();
-    }
-
-    private string? GetUserId()
-    {
-        return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 
 }
