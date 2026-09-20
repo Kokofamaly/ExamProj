@@ -1,10 +1,11 @@
 using MongoDB.Driver;
 using WordCardsApi.Infrastructure.Data;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Infrastructure.Providers;
 
-public class SessionWordProvider
+public class SessionWordProvider : ISessionWordProvider
 {
     private readonly IMongoCollection<SessionWord> _sessionWords;
 

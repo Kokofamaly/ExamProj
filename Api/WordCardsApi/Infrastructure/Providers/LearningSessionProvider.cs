@@ -2,11 +2,12 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using WordCardsApi.Infrastructure.Data;
 using WordCardsApi.Infrastructure.Settings;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Infrastructure.Providers;
 
-public class LearningSessionProvider
+public class LearningSessionProvider : ILearningSessionProvider
 {    
     private readonly IMongoCollection<LearningSession> _sessions;
 

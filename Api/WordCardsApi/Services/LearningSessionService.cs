@@ -1,17 +1,18 @@
 using WordCardsApi.CustomExceptions;
 using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Providers;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Services;
 
 public class LearningSessionService
 {
-    private readonly UserWordProvider _userWordProvider;
-    private readonly SessionWordProvider _sessionWordProvider;
-    private readonly LearningSessionProvider _learningSessionProvider;
+    private readonly IUserWordProvider _userWordProvider;
+    private readonly ISessionWordProvider _sessionWordProvider;
+    private readonly ILearningSessionProvider _learningSessionProvider;
 
-    public LearningSessionService(UserWordProvider userWordProvider, SessionWordProvider sessionWordProvider, LearningSessionProvider learningSessionProvider)
+    public LearningSessionService(IUserWordProvider userWordProvider, ISessionWordProvider sessionWordProvider, ILearningSessionProvider learningSessionProvider)
     {
         _userWordProvider = userWordProvider;
         _sessionWordProvider = sessionWordProvider;

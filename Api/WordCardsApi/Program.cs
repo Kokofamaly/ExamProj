@@ -8,6 +8,7 @@ using MongoDB.Driver;
 using WordCardsApi.Infrastructure.Data;
 using WordCardsApi.Infrastructure.Providers;
 using WordCardsApi.Infrastructure.Settings;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Middleware;
 using WordCardsApi.Models;
 using WordCardsApi.Services;
@@ -27,11 +28,11 @@ builder.Services.AddScoped<RefreshTokenService>();
 builder.Services.AddScoped<UserWordService>();
 builder.Services.AddScoped<UserService>();
 
-builder.Services.AddScoped<LearningSessionProvider>();
-builder.Services.AddScoped<RefreshTokenProvider>();
-builder.Services.AddScoped<SessionWordProvider>();
-builder.Services.AddScoped<UserProvider>();
-builder.Services.AddScoped<UserWordProvider>();
+builder.Services.AddScoped<ILearningSessionProvider, LearningSessionProvider>();
+builder.Services.AddScoped<IRefreshTokenProvider, RefreshTokenProvider>();
+builder.Services.AddScoped<ISessionWordProvider, SessionWordProvider>();
+builder.Services.AddScoped<IUserProvider, UserProvider>();
+builder.Services.AddScoped<IUserWordProvider, UserWordProvider>();
 
 var allowedOrigins = 
     builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>() 

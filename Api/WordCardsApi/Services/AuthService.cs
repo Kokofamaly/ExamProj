@@ -5,15 +5,16 @@ using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Providers;
 using WordCardsApi.Models;
 using WordCardsApi.Enum;
+using WordCardsApi.Interfaces;
 
 namespace WordCardsApi.Services;
 
 public class AuthService
 {
     private readonly IPasswordHasher<User> _hasher;
-    private readonly UserProvider _userProvider;
+    private readonly IUserProvider _userProvider;
 
-    public AuthService(IPasswordHasher<User> hasher, UserProvider userProvider)
+    public AuthService(IPasswordHasher<User> hasher, IUserProvider userProvider)
     {
         _hasher = hasher;
         _userProvider = userProvider;

@@ -3,11 +3,12 @@ using MongoDB.Driver;
 using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Data;
 using WordCardsApi.Infrastructure.Settings;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Infrastructure.Providers;
 
-public class UserProvider
+public class UserProvider : IUserProvider
 {    
     private readonly IMongoCollection<User> _users;
 
@@ -43,6 +44,4 @@ public class UserProvider
     public async Task DeleteUserAsync(string userId)
     => await _users.DeleteOneAsync(u => u.Id == userId);
     
-
-
 }
