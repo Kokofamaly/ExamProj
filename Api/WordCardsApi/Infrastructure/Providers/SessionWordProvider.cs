@@ -1,10 +1,11 @@
 using MongoDB.Driver;
 using WordCardsApi.Infrastructure.Data;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Infrastructure.Providers;
 
-public class SessionWordProvider
+public class SessionWordProvider : ISessionWordProvider
 {
     private readonly IMongoCollection<SessionWord> _sessionWords;
 
@@ -22,7 +23,7 @@ public class SessionWordProvider
     public async Task<SessionWord?> SetCorrectAsync(string id, bool isCorrect)
     => await _sessionWords.FindOneAndUpdateAsync(
         w => w.Id == id, 
-        Builders<SessionWord>.Update.Set(w => w.isCorrect, isCorrect), 
+        Builders<SessionWord>.Update.Set(w => w.IsCorrect, isCorrect), 
         new FindOneAndUpdateOptions<SessionWord>
         {
             ReturnDocument = ReturnDocument.After

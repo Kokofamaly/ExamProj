@@ -1,14 +1,15 @@
 using System.Security.Cryptography;
 using System.Text;
 using WordCardsApi.Infrastructure.Providers;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Services;
 
 public class RefreshTokenService
 {
-    private readonly RefreshTokenProvider _refreshProvider;
-    public RefreshTokenService(RefreshTokenProvider refreshProvider)
+    private readonly IRefreshTokenProvider _refreshProvider;
+    public RefreshTokenService(IRefreshTokenProvider refreshProvider)
     {
         _refreshProvider = refreshProvider;
     }

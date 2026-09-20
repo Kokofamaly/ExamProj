@@ -1,14 +1,15 @@
 using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Providers;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Services;
 
 public class UserService
 {
-    private readonly UserProvider _userProvider;
+    private readonly IUserProvider _userProvider;
     private readonly RefreshTokenService _refreshTokenService;
-    public UserService(UserProvider userProvider, RefreshTokenService refreshTokenService)
+    public UserService(IUserProvider userProvider, RefreshTokenService refreshTokenService)
     {
         _userProvider = userProvider;
         _refreshTokenService = refreshTokenService;

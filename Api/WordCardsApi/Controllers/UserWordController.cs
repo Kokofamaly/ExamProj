@@ -29,9 +29,9 @@ public class UserWordController : ControllerBase
 
         if(words == null) return BadRequest();
 
-        var result = words.Select(w => MapResponseDto(w));
+        var result = words.Select(w => w.MapResponseDto());
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(wordlist items:{result.Count()}) from get word method");
+        _logger.LogInformation("User {UserId} gets {NumberOfWords} words", userId, result.Count());
 
         return Ok(result);
     }
@@ -40,15 +40,15 @@ public class UserWordController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetWord(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var word = await _userWordService.GetUserWordAsync(id);
 
         if(word == null) return NotFound();
         if(word.UserId != userId) return Forbid();
 
-        var wordResponseDto = MapResponseDto(word);
+        var wordResponseDto = word.MapResponseDto();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from get word method");
+        _logger.LogInformation("User {UserId} gets word {WordId}", userId, wordResponseDto.Id);
 
         return Ok(wordResponseDto);
     }
@@ -56,14 +56,14 @@ public class UserWordController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateWord(UserWordCreateDto wordCreateDto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         
         if(userId == null) return Unauthorized();
 
         var word = await _userWordService.CreateUserWordAsync(wordCreateDto, userId);
-        var wordResponseDto = MapResponseDto(word);
+        var wordResponseDto = word.MapResponseDto();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from create word method");
+        _logger.LogInformation("User {UserId} creates word {WordId}", userId, wordResponseDto.Id);
 
         return Ok(wordResponseDto);
     }
@@ -71,13 +71,13 @@ public class UserWordController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateWord(string id, UserWordUpdateDto wordUpdateDto)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var updatedWord = await _userWordService.UpdateUserWordAsync(id, wordUpdateDto);
 
         if(updatedWord == null) return BadRequest();
         if(updatedWord.UserId != userId) return Forbid();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning no content from update word method");
+        _logger.LogInformation("User {UserId} updates word {WordId}", userId, updatedWord.Id);
 
         return NoContent();
     }
@@ -85,7 +85,7 @@ public class UserWordController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWord(string id)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var word = await _userWordService.GetUserWordAsync(id);
 
         if(word == null) return NotFound();
@@ -93,30 +93,9 @@ public class UserWordController : ControllerBase
 
         await _userWordService.DeleteUserWordAsync(word);
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning no content from delete word method");
+        _logger.LogInformation("User {UserId} deleted word {WordId}", userId, word.Id);
 
         return NoContent();
     }
-
-    private string? GetUserId()
-    {
-        return HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    }
-
-    private UserWordResponseDto MapResponseDto(UserWord word)
-    {
-        var wordDto = new UserWordResponseDto
-        {
-            Id = word.Id!,
-            Word = word.Word.StartStringWithCapitalNormalize(),
-            Translation = word.Translation.StartStringWithCapitalNormalize(),
-            Language = word.Language.StartStringWithCapitalNormalize(),
-            Category = word.Category?.StartStringWithCapitalNormalize(),
-            UsageExample = word.UsageExample?.StartStringWithCapitalNormalize()
-        };
-
-        return wordDto;
-    }
-
 
 }

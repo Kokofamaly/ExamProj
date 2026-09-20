@@ -6,14 +6,15 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using WordCardsApi.Infrastructure.Settings;
 using WordCardsApi.Infrastructure.Providers;
+using WordCardsApi.Interfaces;
 
 namespace WordCardsApi.Services;
 
 public class JwtService
 {
     private readonly JwtSettings _jwtSettings;
-    private readonly UserProvider _userProvider;
-    public JwtService(IOptions<JwtSettings> jwtSettings, UserProvider userProvider)
+    private readonly IUserProvider _userProvider;
+    public JwtService(IOptions<JwtSettings> jwtSettings, IUserProvider userProvider)
     {
         _jwtSettings = jwtSettings.Value;
         _userProvider = userProvider;

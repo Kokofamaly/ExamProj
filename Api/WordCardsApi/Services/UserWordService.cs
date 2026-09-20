@@ -1,14 +1,15 @@
 using WordCardsApi.DTOs;
 using WordCardsApi.Infrastructure.Providers;
+using WordCardsApi.Interfaces;
 using WordCardsApi.Models;
 
 namespace WordCardsApi.Services;
 
 public class UserWordService
 {
-    private readonly UserWordProvider _userWordProvider;
+    private readonly IUserWordProvider _userWordProvider;
 
-    public UserWordService(UserWordProvider userWordProvider)
+    public UserWordService(IUserWordProvider userWordProvider)
     {
         _userWordProvider = userWordProvider;
     }
@@ -41,6 +42,11 @@ public class UserWordService
         wordUpdateDto.Language = wordUpdateDto.Language.Trim().ToLowerInvariant();
         wordUpdateDto.Category = wordUpdateDto.Category?.Trim().ToLowerInvariant();
         wordUpdateDto.UsageExample = wordUpdateDto.UsageExample?.Trim().ToLowerInvariant();
+
+        if(String.IsNullOrEmpty(wordUpdateDto.Word) 
+        || String.IsNullOrEmpty(wordUpdateDto.Translation) 
+        || String.IsNullOrEmpty(wordUpdateDto.Language))
+            return null;
 
         var oldWord = await _userWordProvider.GetUserWordAsync(wordId);
         

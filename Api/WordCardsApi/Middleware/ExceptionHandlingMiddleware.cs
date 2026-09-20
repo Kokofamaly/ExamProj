@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using WordCardsApi.CustomExceptions;
 
+
 namespace WordCardsApi.Middleware;
 
 public class ExceptionHandlingMiddleware
@@ -50,7 +51,7 @@ public class ExceptionHandlingMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception");
-
+ 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 

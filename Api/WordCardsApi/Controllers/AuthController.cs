@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WordCardsApi.DTOs;
+using WordCardsApi.Enum;
+using WordCardsApi.Extensions;
 using WordCardsApi.Services;
 
 namespace WordCardsApi.Controllers;
@@ -30,19 +32,27 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginDto userLoginDto)
     {
-        var userToLogin = await _authService.LoginUserAsync(userLoginDto);
+        var loginResult = await _authService.LoginUserAsync(userLoginDto);
         
-        if(userToLogin == null || userToLogin.Id == null) return BadRequest("Failed to login");
+        if(!loginResult.Succeeded) {  
+            return loginResult.LoginErrorEnum switch
+            {
+                LoginErrorEnum.InvalidCredentials => BadRequest(new { message = "Invalid Credentials"}),
+                LoginErrorEnum.UserNotFound => NotFound(new { message = "User Not Found" }),
+                _ => BadRequest()
+            };
+            }
 
+        var userToLogin = loginResult.User!;
         var userResponse = new UserResponseDto{ Email = userToLogin.Email, Name = userToLogin.Name };
 
-        var refreshToken = await _refreshTokenService.GenerateTokenAsync(userToLogin.Id);
+        var refreshToken = await _refreshTokenService.GenerateTokenAsync(userToLogin.Id!);
         SetRefreshTokenCookies(refreshToken);
 
         var accessToken = _jwt.GenerateToken(userToLogin);
         var result = new { user = userResponse, accessToken = accessToken};
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: {userToLogin.Email}:{userToLogin.Id} logged in.");
+        _logger.LogInformation("User {UserId} logged in.", userToLogin.Id);
         return Ok(result);
     }
 
@@ -50,20 +60,27 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
     {
-        var createdUser = await _authService.RegisterUserAsync(userRegisterDto);
+        var registerResult = await _authService.RegisterUserAsync(userRegisterDto);
 
-        if(createdUser == null || createdUser.Id == null) return BadRequest("Failed to register user.");
+        if(!registerResult.Succeeded){
+            return registerResult.RegisterErrorEnum switch
+            {
+                RegisterErrorEnum.EmailAlreadyExists => Conflict(new { message = $"User with {userRegisterDto.Email} email already exists."}),
+                RegisterErrorEnum.EmptyCredentials => BadRequest(new { message = "You did not fill all the fields."}),
+                _ => BadRequest()
+            };
+        }
 
+        var createdUser = registerResult.User!;
         var userResponse = new UserResponseDto{ Email = createdUser.Email, Name = createdUser.Name };
 
-
-        var refreshToken = await _refreshTokenService.GenerateTokenAsync(createdUser.Id);
+        var refreshToken = await _refreshTokenService.GenerateTokenAsync(createdUser.Id!);
         SetRefreshTokenCookies(refreshToken);
         
         var accessToken = _jwt.GenerateToken(createdUser);
         var result = new { user = userResponse, accessToken = accessToken};
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: {createdUser.Email}:{createdUser.Id} registered.");
+        _logger.LogInformation("User {UserId} registered account.", createdUser.Id);
 
         return Ok(result);
     }
@@ -80,8 +97,8 @@ public class AuthController : ControllerBase
 
         var accessToken = await _jwt.GenerateTokenAsync(token.UserId);
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: Refresh token response.");
-        _logger.LogInformation($"{accessToken}");
+        _logger.LogInformation("{Date}: Refresh token response.", DateTimeOffset.UtcNow);
+        _logger.LogInformation("Access Token {AccessToken} created", accessToken);
 
         return Ok(new {accessToken = accessToken});
     }
@@ -103,9 +120,7 @@ public class AuthController : ControllerBase
             Email = user.Email
         };
         
-
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: default auth for:");
-        _logger.LogInformation($"{user.Id}");
+        _logger.LogInformation("User {UserId} authenticated", user.Id);
 
         return Ok(userDto);
     }
@@ -114,12 +129,13 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
+        var userId = User.GetUserId();
         if(HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) 
             await _refreshTokenService.RevokeTokenAsync(refreshToken);
         
         Response.Cookies.Delete("refreshToken");
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: User:{HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)} logged out;");
+        _logger.LogInformation("User {UserId} logged out.", userId);
 
         return NoContent();
     }

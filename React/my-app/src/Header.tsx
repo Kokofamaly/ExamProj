@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { UserContext, type User } from "./UserContext";
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "./api/apiFetch";
+import { ErrorContext } from "./ErrorProvider";
+import { API_URL } from './api/apiConfig';
 
 
 export function Header({setUser} : {
@@ -11,11 +13,12 @@ export function Header({setUser} : {
     const queryClient = useQueryClient();
     const user = useContext(UserContext);
     const navigate = useNavigate();
+    const setErrorMessage = useContext(ErrorContext);
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
             const accessToken = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:5071/auth/logout", { 
+            const response = await fetch(`${API_URL}/auth/logout`, { 
                 method: "POST", 
                 credentials: "include", 
                 headers:{
@@ -34,7 +37,7 @@ export function Header({setUser} : {
             queryClient.clear();
             navigate("/login", { replace: true });
         },
-        onError: (error) => alert(error.message)
+        onError: (error) => setErrorMessage(error.message)
     });
 
     return (<>

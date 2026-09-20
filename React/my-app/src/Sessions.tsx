@@ -5,6 +5,7 @@ import { apiFetch } from "./api/apiFetch";
 import { UserContext } from "./UserContext";
 import { jsx } from "react/jsx-runtime";
 import { data } from "react-router-dom";
+import { ErrorContext } from "./ErrorProvider";
 
 interface Session{
     id: string,
@@ -49,6 +50,7 @@ export function Sessions(){
     const [newSession, setNewSession] = useState<Omit<Session, "id" | "createdAt">>({language: "", category: ""});
     const [isPending, startTransition] = useTransition();
     const [startedSessionId, setStartedSessionId] = useState<string | null>(null);
+    const setErrorMessage = useContext(ErrorContext);
 
     const sessionDrawerRef = useRef<HTMLDialogElement | null>(null);
 
@@ -78,7 +80,7 @@ export function Sessions(){
                 const data = await response.json() as { session: Session, sessionWords: Array<SessionWord> };
                 return data;
             },
-            onError: data => alert(data.message)
+            onError: data => setErrorMessage(data.message)
         }
     );
 
@@ -104,7 +106,7 @@ export function Sessions(){
     const addSessionMutation = useMutation({
         mutationFn: addSession,
         onSuccess: (data) => setSessionList(prev => [...prev, data as Session]),
-        onError: (error) => alert(error.message)
+        onError: (error) => setErrorMessage(error.message)
     });
 
 
@@ -184,11 +186,12 @@ export function Sessions(){
 function SessionCard({ session, setSessionList, setOptimisticSessionList, setStartedSessionId, startedSessionId } : SessionCardProps){
     const sessionCreatedAt = new Date(session.createdAt);
     const [isPending, startTransition] = useTransition();
+    const setErrorMessage = useContext(ErrorContext);
 
     const deleteSessionMutation = useMutation({
         mutationFn: deleteSession,
         onSuccess: (sessionId) => { setSessionList(prev => prev.filter(s => s.id !== sessionId)) },
-        onError: error => alert(error.message)
+        onError: error => setErrorMessage(error.message)
     });
 
     async function deleteSession(sessionId: string){
@@ -236,7 +239,8 @@ function Session({ session, sessionWords, startedSessionId, setStartedSessionId 
     const [words, setWords] = useState([...sessionWords].sort((a, b) => b.order - a.order));
     const [isLastAnswerCorrect, setIsLastAnswerCorrect] = useState<boolean | null>(null);
     const [currentWord, setCurrentWord] = useState<SessionWord | null | undefined>(sessionWords.find(w => w.isCorrect === null));
-
+    const setErrorMessage = useContext(ErrorContext);
+    
     const saveAnswerMutation = useMutation({
         mutationFn: async (props: {sessionId: string, wordRequest: {id: string, sessionId: string, userWordId: string, isCorrect: boolean}}) => {
             const response = await apiFetch(`/learningsession/${props.sessionId}`, {
@@ -271,7 +275,7 @@ function Session({ session, sessionWords, startedSessionId, setStartedSessionId 
                 return updatedWords;
             });
         },
-        onError: (error) => alert(error.message)
+        onError: (error) => setErrorMessage(error.message)
     });
     
 
