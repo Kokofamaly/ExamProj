@@ -5,6 +5,7 @@ using WordCardsApi.Models;
 using WordCardsApi.Services;
 using WordCardsApi.Infrastructure.Providers;
 using WordCardsApi.Extensions;
+using WordCardsApi.Interfaces;
 
 namespace WordCardsApi.Controllers;
 
@@ -13,12 +14,12 @@ namespace WordCardsApi.Controllers;
 public class LearningSessionController : ControllerBase
 {
     private readonly LearningSessionService _learningSessionService;
-    private readonly SessionWordProvider _sessionWordProvider;
+    private readonly ISessionWordProvider _sessionWordProvider;
     private readonly UserWordService _userWordService;
     private readonly ILogger<LearningSessionController> _logger;
     public LearningSessionController(
         LearningSessionService learningSessionService, 
-        SessionWordProvider sessionWordProvider, 
+        ISessionWordProvider sessionWordProvider, 
         UserWordService userWordService,
         ILogger<LearningSessionController> logger)
     {
