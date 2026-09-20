@@ -87,13 +87,12 @@ public class UserWordServiceTests
     [Fact]
     public async Task DeleteUserWordAsync_DeletesUserWord()
     {
-        // Given
         var provider = new Mock<IUserWordProvider>();
         var wordToDelete = new UserWord(){Id = "word-id"};
         var service = new UserWordService(provider.Object);
-        // When
+
         await service.DeleteUserWordAsync(wordToDelete);
-        // Then
+
         provider.Verify(provider => provider.DeleteUserWordAsync(It.IsAny<string>()), Times.Once);
     }
 }
