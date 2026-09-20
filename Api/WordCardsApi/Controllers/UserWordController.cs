@@ -31,7 +31,7 @@ public class UserWordController : ControllerBase
 
         var result = words.Select(w => w.MapResponseDto());
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(wordlist items:{result.Count()}) from get word method");
+        _logger.LogInformation("User {UserId} gets {NumberOfWords} words", userId, result.Count());
 
         return Ok(result);
     }
@@ -48,7 +48,7 @@ public class UserWordController : ControllerBase
 
         var wordResponseDto = word.MapResponseDto();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from get word method");
+        _logger.LogInformation("User {UserId} gets word {WordId}", userId, wordResponseDto.Id);
 
         return Ok(wordResponseDto);
     }
@@ -63,7 +63,7 @@ public class UserWordController : ControllerBase
         var word = await _userWordService.CreateUserWordAsync(wordCreateDto, userId);
         var wordResponseDto = word.MapResponseDto();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning ok(word:{wordResponseDto.Word}) from create word method");
+        _logger.LogInformation("User {UserId} creates word {WordId}", userId, wordResponseDto.Id);
 
         return Ok(wordResponseDto);
     }
@@ -77,7 +77,7 @@ public class UserWordController : ControllerBase
         if(updatedWord == null) return BadRequest();
         if(updatedWord.UserId != userId) return Forbid();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning no content from update word method");
+        _logger.LogInformation("User {UserId} updates word {WordId}", userId, updatedWord.Id);
 
         return NoContent();
     }
@@ -93,7 +93,7 @@ public class UserWordController : ControllerBase
 
         await _userWordService.DeleteUserWordAsync(word);
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}:Returning no content from delete word method");
+        _logger.LogInformation("User {UserId} deleted word {WordId}", userId, word.Id);
 
         return NoContent();
     }

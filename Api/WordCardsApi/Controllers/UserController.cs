@@ -31,7 +31,7 @@ public class UserController : ControllerBase
         
         var userResponseDto = user.MapResponseDto();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: User:{user.Id} gets profile data");
+        _logger.LogInformation("User {UserId} gets profile data", user.Id);
         return Ok(userResponseDto);
 
     }
@@ -45,7 +45,7 @@ public class UserController : ControllerBase
         var user = await _userService.UpdateUserAsync(userId, userUpdateDto);
         if(user == null) return BadRequest();
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: User:{user.Id} updates profile data");
+        _logger.LogInformation("User {UserId} updates profile data", user.Id);
         
         return NoContent();
     }
@@ -60,7 +60,7 @@ public class UserController : ControllerBase
 
         await _userService.DeleteUserAsync(userId, token);
 
-        _logger.LogInformation($"{DateTimeOffset.UtcNow}: User:{userId} deletes profile");
+        _logger.LogInformation("User {UserId} deletes profile", userId);
 
         return NoContent();
     }
