@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {UserContext, type User} from './UserContext'
 import { useMutation } from '@tanstack/react-query';
 import { data, useNavigate } from 'react-router-dom';
+import { ErrorContext } from './ErrorProvider';
+import { API_URL } from './api/apiConfig';
 
 interface LoginProps {
   setUser: (user: User | null) => void;
@@ -12,18 +14,20 @@ export function Register({setUser} : LoginProps){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const setErrorMessage = useContext(ErrorContext);
 
     const mutation = useMutation({
         mutationFn: registerUser,
         onSuccess: (data) =>{
             setUser(data.user);
             localStorage.setItem("accessToken", data.accessToken);
+            navigate("/");
         },
-        onError: (error) => alert(error.message)
+        onError: (error) => setErrorMessage(error.message)
     });
     
     async function registerUser(){
-        const response = await fetch("http://localhost:5071/auth/register", {
+        const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers:{
                 "Content-type": "application/json"
@@ -43,7 +47,6 @@ export function Register({setUser} : LoginProps){
     function handleRegister(e : React.SubmitEvent){
         e.preventDefault();
         mutation.mutate();
-        navigate("/");
     }
 
     return(<>

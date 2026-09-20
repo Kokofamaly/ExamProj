@@ -4,6 +4,7 @@ import { useMutation, useQuery, type UseMutationResult } from "@tanstack/react-q
 import { apiFetch } from "./api/apiFetch";
 import { jsx } from "react/jsx-runtime";
 import { UserContext } from "./UserContext";
+import { ErrorContext } from "./ErrorProvider";
 
 interface Word{
     id: string,
@@ -23,7 +24,7 @@ export function Words(){
     const [selectedWordId, setSelectedWordId] = useState<string | null>(null);
     const [mode, setMode] = useState<"editing" | "adding" | null>(null);
     const [editedWord, setEditedWord] = useState<Word | null>(null);
-
+    const setErrorMessage = useContext(ErrorContext);
     const [isPending, startTransition] = useTransition();
 
     const getWordsQuery = useQuery({
@@ -62,7 +63,7 @@ export function Words(){
             return data;
         },
         onSuccess: (data) => setWordList(prev => [...prev, data]),
-        onError: (error) => alert(error.message),
+        onError: (error) => setErrorMessage(error.message),
     });
 
     const editWordMutation = useMutation({
@@ -79,7 +80,7 @@ export function Words(){
             return updatedWord;
         },
         onSuccess: (updatedWord: Omit<Word, "id">, variables) => setWordList(prev => prev.map(w => w.id === variables.wordId ? {id: variables.wordId, ...updatedWord} : w)),
-        onError: error => alert(error.message)
+        onError: error => setErrorMessage(error.message)
     });
 
     const deleteWordMutation = useMutation({
@@ -93,11 +94,11 @@ export function Words(){
             return wordId;
         },
         onSuccess: wordId => setWordList(prev => prev.filter(w => w.id !== wordId)),
-        onError: error => alert(error.message)
+        onError: error => setErrorMessage(error.message)
     });
 
     const selectedWord = optimisticWordList.find(w => w.id === selectedWordId);
-    const filteredWordList: Array<Word> = wordList.filter(w => w.word.toLowerCase().startsWith(searchWord.toLowerCase()));
+    const filteredWordList: Array<Word> = optimisticWordList.filter(w => w.word.toLowerCase().startsWith(searchWord.toLowerCase()));
     
     function handleEdit(wordId: string, updatedWord: Omit<Word, "id">){
         setMode(null);
@@ -153,48 +154,28 @@ export function Words(){
                     value={searchWord} 
                     onChange={e => setSearchWord(e.target.value)}/>
                 <ul>
-                    {searchWord 
-                    ? filteredWordList.map(w => selectedWord === w 
-                        ? mode === "editing" 
+                    {filteredWordList.map(w => selectedWord === w 
+                    ? mode === "editing" 
 
-                            ? <EditWord 
-                                word={w} 
-                                editedWord={editedWord} 
-                                setEditedWord={setEditedWord} 
-                                handleEdit={handleEdit} 
-                                setMode={setMode} 
-                                selectedWordId={selectedWordId}/>
+                        ? <EditWord 
+                            word={w} 
+                            editedWord={editedWord} 
+                            setEditedWord={setEditedWord} 
+                            handleEdit={handleEdit} 
+                            setMode={setMode} 
+                            selectedWordId={selectedWordId}/>
 
-                            : <SelectWord 
-                                word={w} 
-                                selectedWord={selectedWord} 
-                                handleSelect={handleSelect} 
-                                handleDelete={handleDelete} 
-                                setMode={setMode} 
-                                setEditedWord={setEditedWord} /> 
+                        : <SelectWord 
+                            word={w} 
+                            selectedWord={selectedWord} 
+                            handleSelect={handleSelect} 
+                            handleDelete={handleDelete} 
+                            setMode={setMode} 
+                            setEditedWord={setEditedWord} /> 
 
-                        : <li key={w.id} className="wordcard" onClick={() => handleSelect(w.id)}>{w.word}</li>) 
+                    : <li key={w.id} className="wordcard" onClick={() => handleSelect(w.id)}>{w.word}</li>) 
 
-                    : optimisticWordList.map(w => selectedWord === w 
-                        ? mode === "editing" 
-
-                            ? <EditWord 
-                                word={w} 
-                                editedWord={editedWord} 
-                                setEditedWord={setEditedWord} 
-                                handleEdit={handleEdit} 
-                                setMode={setMode} 
-                                selectedWordId={selectedWordId}/>
-
-                            : <SelectWord 
-                                word={w} 
-                                selectedWord={selectedWord} 
-                                handleSelect={handleSelect} 
-                                handleDelete={handleDelete} 
-                                setMode={setMode} 
-                                setEditedWord={setEditedWord} />
-
-                        : <li key={w.id} className="wordcard" onClick={() => handleSelect(w.id)}>{w.word}</li>)}
+                    }
                 </ul>
             </>}
 

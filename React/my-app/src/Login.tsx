@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {type User} from './UserContext'
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { ErrorContext } from './ErrorProvider';
+import { API_URL } from './api/apiConfig';
 
 
 interface LoginProps {
@@ -12,6 +14,7 @@ export function Login({setUser} : LoginProps){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const setErrorMessage = useContext(ErrorContext);
 
     const mutation = useMutation({
         mutationFn: loginUser,
@@ -20,11 +23,11 @@ export function Login({setUser} : LoginProps){
             localStorage.setItem("accessToken", data.accessToken);
             navigate("/")
         },
-        onError: (error) => alert(error.message)
+        onError: (error) => setErrorMessage(error.message)
     });
     
     async function loginUser(){
-        const response = await fetch("http://localhost:5071/auth/login", {
+        const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers:{
                 "Content-type": "application/json"

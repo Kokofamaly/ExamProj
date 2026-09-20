@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5071";
+import {API_URL} from './apiConfig';
 
 export async function apiFetch(
     endpoint: string,
